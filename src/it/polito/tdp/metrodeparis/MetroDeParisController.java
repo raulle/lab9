@@ -5,6 +5,7 @@
 package it.polito.tdp.metrodeparis;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -36,7 +37,14 @@ public class MetroDeParisController {
 
     @FXML
     void doCalcolaPercorso(ActionEvent event) {
-
+    	Fermata f1= comboPartenza.getValue();
+    	Fermata f2= comboArrivo.getValue();
+    	List<Fermata> fermate=model.getPercorso(f1, f2);
+    	fermate.remove(f2);
+    	Double d =(model.getTempoStimato(f1, f2))+(fermate.size()*0.5)-1;
+    	txtResult.appendText("Percorso: "+fermate.toString());
+    	txtResult.appendText("\n\n");
+    	txtResult.appendText("Tempo di percorrenza stimato: "+d.toString()+" minuti");
     }
 
     @FXML

@@ -2,12 +2,13 @@ package it.polito.tdp.metrodeparis.model;
 
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 
@@ -15,7 +16,7 @@ import it.polito.tdp.metrodeparis.dao.MetroDAO;
 
 public class Model {
 	
-	private WeightedMultigraph<Fermata,DefaultWeightedEdge> grafo;
+	private DirectedWeightedMultigraph<Fermata,DefaultWeightedEdge> grafo;
 	private DijkstraShortestPath<Fermata, DefaultWeightedEdge> dijkstra ;
 	
 	
@@ -28,7 +29,7 @@ public class Model {
 		
 		MetroDAO dao=new MetroDAO();
 		
-		this.grafo = new WeightedMultigraph<Fermata,DefaultWeightedEdge>(DefaultWeightedEdge.class);
+		this.grafo = new DirectedWeightedMultigraph<Fermata,DefaultWeightedEdge>(DefaultWeightedEdge.class);
 		
 		Graphs.addAllVertices(grafo, this.getFermate());
 		//System.out.println(grafo);
@@ -65,14 +66,24 @@ public class Model {
 		//	return;
 		}
 	
-	public List<Fermata> getPercorso(Fermata f1, Fermata f2){
+	public List<Fermata> getPercorsoArrivo(Fermata f1, Fermata f2){
 		if(grafo==null)
 			this.creaGrafo();
-		List<Fermata> fermate= new ArrayList<Fermata>();
+		List<Fermata> fermateA= new ArrayList<Fermata>();
 		dijkstra = new DijkstraShortestPath<Fermata, DefaultWeightedEdge>(grafo, f1,f2);
 		for(DefaultWeightedEdge e : dijkstra.getPathEdgeList())
-			fermate.add(grafo.getEdgeTarget(e));
-		return fermate;
+			fermateA.add(grafo.getEdgeTarget(e));
+		return fermateA;
+	}
+	
+	public List<Fermata> getPercorsoPartenza(Fermata f1, Fermata f2){
+		if(grafo==null)
+			this.creaGrafo();
+		List<Fermata> fermateP= new ArrayList<Fermata>();
+		dijkstra = new DijkstraShortestPath<Fermata, DefaultWeightedEdge>(grafo, f1,f2);
+		for(DefaultWeightedEdge e : dijkstra.getPathEdgeList())
+			fermateP.add(grafo.getEdgeSource(e));
+		return fermateP;
 	}
 		
 }
